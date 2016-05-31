@@ -118,7 +118,19 @@ class ChessBoard:
         moveString = stdout.decode("utf-8")
         nums = moveString.split()
         return ((int(nums[0]), int(nums[1])), (int(nums[2]), int(nums[3])))
-        
+
+
+    def getCLegalMove(self, startLocation, endLocation):
+        (startY, startX) = startLocation
+        (endY, endX) = endLocation
+        args = "./getAI " + self.toString() + str(startY) + str(startX) + str(endY) + str(endX)
+        print(args)
+        p = Popen(args, stdout=PIPE, stderr=PIPE, shell=True)
+        stdout, stderr = p.communicate()
+        moveString = stdout.decode("utf-8")
+        print(moveString)
+        return (moveString == "1")
+    
     def getPieceName(self, num):
         for str in self.pieceLookup:
             if self.pieceLookup[str] == num:
@@ -630,6 +642,7 @@ class ChessBoard:
                 return Branch(None, self.estimate(board, moveList), 0)
         for move in moveList:
             (startLoc, endLoc) = move
+            print(str(startLoc) + str(endLoc) + " | ", end="")
             newBoard = copy.deepcopy(board)
             newBoard.makeAIMove(startLoc, endLoc)
             branch = self.alphabeta(depth - 1, newBoard, (copy.deepcopy(alpha), copy.deepcopy(beta)))
@@ -649,6 +662,7 @@ class ChessBoard:
                     return branch
                 elif(beta.estimate > branch.estimate):
                     beta = branch
+        print("")
         if(maxie):
             return alpha
         else:
@@ -816,12 +830,12 @@ def label(board, top, clicks):
                 #imageName = os.path.abspath("Documents\\Python Scripts\\chessAI\\" + ("".join(pieceName.split())).lower() + ".gif")
                 imageName = ("".join(pieceName.split())).lower() + ".gif"
                 img = PhotoImage(file=imageName)
-                nextLabel = tkinter.Label(top, fg=txt, bg=back, text="\n\n\n",
-                borderwidth=1, width=120, height=102, image=img)
+                nextLabel = tkinter.Label(top, fg=txt, bg=back, text=" \n\n\n ",
+                borderwidth=1, width=58, height=70, image=img)
                 nextLabel.image = img
             else:
                 nextLabel = tkinter.Label(top, fg=txt, bg=back,  text=pieceName,
-                borderwidth=1, width=15, height=5 )
+                borderwidth=1, width=7, height=5 )
             nextLabel.grid(row=r,column=c)
             nextLabel.bind("<Button-1>", lambda event: clicks.square_click(board, top, event))
 
@@ -830,6 +844,7 @@ def graphics():
     board.setBoard()
     top = tkinter.Tk()
     clicks = ClickRemember()
+    #board.materialAI();
     label(board, top, clicks)
     top.mainloop()
 

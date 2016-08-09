@@ -460,7 +460,7 @@ void centerFill(chess_board* BD, int* white, int* black) {
       if(get_square(BD->B, y, x) == 11) {
         *white = (*white) + 1;
       }
-      if(get_square(BD->B, y, x) == 21) {
+      if(get_square(BD->B, y, x) == 11) {
         *black = (*black) + 1;
       }
     }
@@ -1066,11 +1066,17 @@ void makeAIMove(chess_board* BD, move* mv) {
 int estimate(chess_board* BD, int* len) {
   int maxie = 0;
   int minnie = 0;
-  int black = 0;
-  int white = 0;
-  centerFill(BD, &white, &black);
-  maxie += white / 2;
-  minnie += black / 2;
+  int* black = malloc(sizeof(int));
+  int* white = malloc(sizeof(int));
+  *white = 0;
+  *black = 0;
+  centerFill(BD, white, black);
+  int centralWhitePawns = *white;
+  int centralBlackPawns = *black;
+  free(white);
+  free(black);
+  maxie += centralWhitePawns / 2;
+  minnie += centralBlackPawns / 2;
   if(len != NULL && *len == 0) {
     if(BD->white_turn) {
       if(inCheck(BD, true)) {
@@ -1221,6 +1227,44 @@ move* materialAIMove(chess_board* BD) {
   return B->move;
 }
 
+void printBoard(chess_board* BD) {
+  for(int i = 0; i < 8; i++) {
+    for(int j = 0; j < 8; j++) {
+      int square = get_square(BD->B, i, j);
+      if(square == 0) {
+        fprintf(stderr, "%d  ", square);
+      } else {
+        fprintf(stderr, "%d ", square);
+      }
+    }
+    fprintf(stderr, "\n");
+  }
+}
+
+void makeHumanMove(chess_board* CB) {
+  int startX;
+  int startY;
+  int endX;
+  int endY;
+  scanf("%d %d %d %d", &startY, &startX, &endY, &endX);
+  printf("%d %d %d %d\n", startY, startX, endY, endX);
+  move* M = move_new(startY, startX, endY, endX);
+  makeMove(CB, M);
+}
+
+/*
+int main() {
+  chess_board* BD = chess_board_new();
+  set_board(BD);
+  printBoard(BD);
+  for(int i = 0; i < 1; i++) {
+    materialAI(BD);
+    printf("\n");
+    printBoard(BD);
+  }
+  return 0;
+}
+*/
 
 int main(int argc, char* argv[]) {
   if(argc != 2) {

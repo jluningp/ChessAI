@@ -112,10 +112,9 @@ class ChessBoard:
         return s
 
     def getCAI(self):
-        args = "./getAI " + self.toString()
-        p = Popen(args, stdout=PIPE, stderr=PIPE, shell=True)
-        stdout, stderr = p.communicate()
-        moveString = stdout.decode("utf-8")
+        args = os.path.abspath("Documents\\Python Scripts\\chessAIC\\getAI.exe")
+        p = subprocess.check_output([args, self.toString()], shell=True)
+        moveString = p.decode("utf-8")
         nums = moveString.split()
         return ((int(nums[0]), int(nums[1])), (int(nums[2]), int(nums[3])))
 
@@ -827,15 +826,15 @@ def label(board, top, clicks):
             back = coloring(r,c)[0]
             pieceName = (board.getPieceName(board.getPiece((r,c))))
             if(pieceName != ""):
-                #imageName = os.path.abspath("Documents\\Python Scripts\\chessAI\\" + ("".join(pieceName.split())).lower() + ".gif")
-                imageName = ("".join(pieceName.split())).lower() + ".gif"
+                imageName = os.path.abspath("Documents\\Python Scripts\\chessAIC\\" + ("".join(pieceName.split())).lower() + ".gif")
+                #imageName = ("".join(pieceName.split())).lower() + ".gif"
                 img = PhotoImage(file=imageName)
                 nextLabel = tkinter.Label(top, fg=txt, bg=back, text=" \n\n\n ",
-                borderwidth=1, width=58, height=70, image=img)
+                borderwidth=1, width=120, height=102, image=img)
                 nextLabel.image = img
             else:
                 nextLabel = tkinter.Label(top, fg=txt, bg=back,  text=pieceName,
-                borderwidth=1, width=7, height=5 )
+                borderwidth=1, width=15, height=5 )
             nextLabel.grid(row=r,column=c)
             nextLabel.bind("<Button-1>", lambda event: clicks.square_click(board, top, event))
 
@@ -849,4 +848,3 @@ def graphics():
     top.mainloop()
 
 graphics()
-

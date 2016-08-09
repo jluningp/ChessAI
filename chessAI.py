@@ -826,8 +826,8 @@ def label(board, top, clicks):
             back = coloring(r,c)[0]
             pieceName = (board.getPieceName(board.getPiece((r,c))))
             if(pieceName != ""):
-                imageName = os.path.abspath("Documents\\Python Scripts\\chessAIC\\" + ("".join(pieceName.split())).lower() + ".gif")
-                #imageName = ("".join(pieceName.split())).lower() + ".gif"
+                imageName = ("".join(pieceName.split())).lower() + ".gif"
+                #os.path.abspath("Documents\\Python Scripts\\chessAIC\\" + ("".join(pieceName.split())).lower() + ".gif")
                 img = PhotoImage(file=imageName)
                 nextLabel = tkinter.Label(top, fg=txt, bg=back, text=" \n\n\n ",
                 borderwidth=1, width=120, height=102, image=img)
